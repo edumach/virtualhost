@@ -1,31 +1,42 @@
 #!/bin/bash
 
-# Kontrola, zda skript běží jako root
+# Kontrola root oprávnění
 if [[ $EUID -ne 0 ]]; then
     echo "Tento skript musí být spuštěn s root oprávněním (pomocí sudo)."
     exit 1
 fi
 
-# vstupní název
+# Zadání názvu webu
 read -p "Zadej název webu (bez .cz): " site
-
 if [[ -z "$site" ]]; then
-    echo "Chyba: musíš zadat název."
-    echo "bylinky nebo caje"
+    echo "Chyba: musíte zadat název webu."
     exit 1
 fi
 
-cesta="/etc/apache2/sites-available/$site.conf"
+webdir="/var/www/$site"
+conf="/etc/apache2/sites-available/$site.conf"
 
-# Vytvořit adresář pro web
-rm -rf /var/www/$site 2> /dev/null
-mkdir -p /var/www/$site
+echo "---------------------------------------"
+echo "Vytvářím virtualhost: $site"
+echo "---------------------------------------"
 
-# Oprávnění
-chown -R www-data:www-data /var/www/$site
+# 1) Vytvořit adresář pro web
+rm -rf "$webdir" 2> /dev/null
+mkdir -p "$webdir"
 
-# Konfigurace
-cat <<EOF > "$cesta"
+# 2) Vytvořit základní index.html
+cat <<EOF > "$webdir/index.html"
+<h1>$site.cz</h1>
+<p>Vítejte na webu $site.cz</p>
+EOF
+
+# 3) Nastavení oprávnění
+chown -R www-data:www-data "$webdir"
+find "$webdir" -type d -exec chmod 755 {} \;
+find "$webdir" -type f -exec chmod 644 {} \;
+
+# 4) Vytvoření konfigurace
+cat <<EOF > "$conf"
 <VirtualHost *:80>
     ServerName $site.cz
     DocumentRoot /var/www
@@ -43,19 +54,11 @@ cat <<EOF > "$cesta"
 </VirtualHost>
 EOF
 
-# Aktivace
+# 5) Aktivace webu a reload Apache
 a2ensite "$site.conf"
 systemctl reload apache2
 
-# vytvoření index.html
-echo "<h1>$site.cz</h1>" > /var/www/$site/index.html
-echo "<p>Vítejte na webu $site.cz</p>" >> /var/www/$site/index.html
-# a nastavení oprávnění
-chown www-data:www-data /var/www/$site/index.html
-chmod 644 /var/www/$site/index.html
-
-echo "-------------------------"
+echo "---------------------------------------"
 echo "Hotovo."
 echo "Web je připraven na http://192.168.21.nnn/$site.cz"
-echo "------------------------"
-
+echo "---------------------------------------"
