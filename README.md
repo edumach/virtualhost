@@ -16,7 +16,7 @@ Tyto skripty slouží k rychlému vytváření a odstraňování testovacích vi
   - 🟡 žlutá = informace  
   - 🔴 červená = chyba
 
-### 2. `delete_vhost.sh`
+### 2. `remove_vhost.sh`
 
 - Komplexně odstraní zvolený virtualhost
   - deaktivuje web (`a2dissite`)  
