@@ -6,10 +6,15 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# Zadání názvu webu k odstranění
 read -p "Zadej název webu k odstranění (bez .cz): " site
+if [[ -z "$site" ]]; then
+    echo "Chyba: musíte zadat název webu."
+    exit 1
+fi
 
-conf="/etc/apache2/sites-available/$site.conf"
 webdir="/var/www/$site"
+conf="/etc/apache2/sites-available/$site.conf"
 
 echo "---------------------------------------"
 echo "Odstraňuji virtualhost: $site"
@@ -20,23 +25,19 @@ if [[ -f "$conf" ]]; then
     echo "Deaktivuji konfiguraci..."
     a2dissite "$site.conf"
 else
-    echo "Konfigurace nenalezena, přeskočeno."
+    echo "Konfigurační soubor nenalezen, přeskočeno."
 fi
 
 # 2) Smazání souboru konfigurace
 if [[ -f "$conf" ]]; then
     echo "Mažu konfigurační soubor..."
     rm "$conf"
-else
-    echo "Soubor $conf neexistuje."
 fi
 
 # 3) Smazání adresáře webu
 if [[ -d "$webdir" ]]; then
     echo "Mažu adresář webu..."
     rm -rf "$webdir"
-else
-    echo "Adresář $webdir neexistuje."
 fi
 
 # 4) Smazání logů
