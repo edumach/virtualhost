@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Kontrola, zda skript běží jako root
+if [[ $EUID -ne 0 ]]; then
+    echo "Tento skript musí být spuštěn s root oprávněním (pomocí sudo)."
+    exit 1
+fi
+
 read -p "Zadej název webu (bez .cz): " site
 
 if [[ -z "$site" ]]; then
