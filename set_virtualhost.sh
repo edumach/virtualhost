@@ -6,6 +6,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# vstupní název
 read -p "Zadej název webu (bez .cz): " site
 
 if [[ -z "$site" ]]; then
@@ -16,14 +17,14 @@ fi
 
 cesta="/etc/apache2/sites-available/$site.conf"
 
-# 1) Vytvořit adresář pro web
+# Vytvořit adresář pro web
 rm -rf /var/www/$site 2> /dev/null
 mkdir -p /var/www/$site
 
-# 2) Oprávnění
+# Oprávnění
 chown -R www-data:www-data /var/www/$site
 
-# 3) Konfigurace
+# Konfigurace
 cat <<EOF > "$cesta"
 <VirtualHost *:80>
     ServerName $site.cz
@@ -42,9 +43,16 @@ cat <<EOF > "$cesta"
 </VirtualHost>
 EOF
 
-# 4) Aktivace
+# Aktivace
 a2ensite "$site.conf"
 systemctl reload apache2
+
+# vytvoření index.html
+echo "<h1>$site.cz</h1>" > /var/www/$site/index.html
+echo "<p>Vítejte na webu $site.cz</p>" >> /var/www/$site/index.html
+# a nastavení oprávnění
+chown www-data:www-data /var/www/$site/index.html
+chmod 644 /var/www/$site/index.html
 
 echo "-------------------------"
 echo "Hotovo."
