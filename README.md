@@ -22,7 +22,7 @@ Tyto skripty slouží k rychlému vytváření a odstraňování testovacích vi
   - deaktivuje web (`a2dissite`)  
   - smaže konfiguraci `/etc/apache2/sites-available/<nazev_webu>.conf`  
   - smaže adresář `/var/www/<nazev_webu>`  
-  - smaže logy `/var/log/apache2/<nazev_webu>_*.log`  
+  - smaže logy `/var/log/apache2/<nazev_webu>*.log`  
   - reload Apache
 - Barevný výstup stejný jako u skriptu pro vytvoření
 
