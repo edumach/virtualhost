@@ -1,15 +1,22 @@
 #!/bin/bash
 
+# Barevné konstanty
+GREEN="\e[92m"
+YELLOW="\e[93m"
+RED="\e[91m"
+RESET="\e[0m"
+
+
 # Kontrola root oprávnění
 if [[ $EUID -ne 0 ]]; then
-    echo "Tento skript musí být spuštěn s root oprávněním (pomocí sudo)."
+    echo -e "${RED}Tento skript musí být spuštěn s root oprávněním (pomocí sudo).${RESET}"
     exit 1
 fi
 
 # Zadání názvu webu
 read -p "Zadej název webu (bez .cz): " site
 if [[ -z "$site" ]]; then
-    echo "Chyba: musíte zadat název webu."
+    echo -e "${RED}Chyba: musíš zadat název webu.${RESET}"
     exit 1
 fi
 
@@ -17,7 +24,7 @@ webdir="/var/www/$site"
 conf="/etc/apache2/sites-available/$site.conf"
 
 echo "---------------------------------------"
-echo "Vytvářím virtualhost: $site"
+echo -e "${YELLOW}Vytvářím virtualhost: $site${RESET}"
 echo "---------------------------------------"
 
 # 1) Vytvořit adresář pro web
@@ -58,7 +65,7 @@ EOF
 a2ensite "$site.conf"
 systemctl reload apache2
 
-echo "---------------------------------------"
+echo -e "${GREEN}---------------------------------------"
 echo "Hotovo."
 echo "Web je připraven na http://192.168.21.nnn/$site.cz"
-echo "---------------------------------------"
+echo "---------------------------------------${RESET}"
