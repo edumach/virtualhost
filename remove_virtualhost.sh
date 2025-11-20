@@ -46,7 +46,7 @@ if [[ -d "$webdir" ]]; then
 fi
 
 # 4) Smazání logů
-echo "Mažu log soubory..."
+echo -e "${YELLOW}Mažu log soubory...${RESET}"
 rm -f /var/log/apache2/${site}_error.log
 rm -f /var/log/apache2/${site}_access.log
 
