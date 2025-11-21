@@ -2,14 +2,26 @@
 
 # Skript vytvoří nový web jako adresář ve /var/www/html
 
-read -p "Zadejte název webu (např. caje.cz): " site
+GREEN="\e[92m"
+YELLOW="\e[93m"
+RED="\e[91m"
+RESET="\e[0m"
+
+
+# Kontrola root oprávnění
+if [[ $EUID -ne 0 ]]; then
+    echo -e "${RED}Tento skript musí být spuštěn s root oprávněním (pomocí sudo).${RESET}"
+    exit 1
+fi
+
+read -p "${YELLOW}Zadejte název webu (např. caje.cz): ${RESET}" site
 
 # Cílová cesta
 target="/var/www/html/$site"
 
 # Kontrola, zda už existuje
 if [ -d "$target" ]; then
-    echo -e "\e[31mAdresář $target již existuje.\e[0m"
+    echo -e "${RED}Adresář $target již existuje.${RESET}"
     exit 1
 fi
 
@@ -25,6 +37,7 @@ echo "<h1>$site</h1>" > "$target/index.html"
 echo "<p>Vitejte na webu $site</p>" >> "$target/index.html"
 
 # Barevná zelená zpráva
-echo -e "\e[92m---------------------------------------"
+echo -e "${GREEN}---------------------------------------"
 echo -e "Web '$site' byl vytvořen v $target"
-echo -e "---------------------------------------\e[0m"
+echo -e "---------------------------------------${RESET}"
+echo

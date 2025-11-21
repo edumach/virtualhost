@@ -2,18 +2,30 @@
 
 # Skript smaže podadresář webu z /var/www/html
 
-read -p "Zadejte název webu ke smazání (např. caje.cz): " site
+GREEN="\e[92m"
+YELLOW="\e[93m"
+RED="\e[91m"
+RESET="\e[0m"
+
+# Kontrola root oprávnění
+if [[ $EUID -ne 0 ]]; then
+    echo -e "${RED}Tento skript musí být spuštěn s root oprávněním (pomocí sudo).${RESET}"
+    exit 1
+fi
+
+
+read -p "${YELLOW}Zadejte název webu ke smazání (např. caje.cz): ${RESET}" site
 
 target="/var/www/html/$site"
 
 # Kontrola existence
 if [ ! -d "$target" ]; then
-    echo -e "\e[31mAdresář $target neexistuje.\e[0m"
+    echo -e "${RED}Adresář $target neexistuje.${RESET}"
     exit 1
 fi
 
 # Potvrzení
-read -p "Opravdu chcete smazat $target? (y/n): " confirm
+read -p "${RED}Opravdu chcete smazat $target? (y/n):${RESET} " confirm
 if [ "$confirm" != "y" ]; then
     echo "Zrušeno."
     exit 0
@@ -23,6 +35,7 @@ fi
 rm -rf "$target"
 
 # Barevná zelená zpráva
-echo -e "\e[92m---------------------------------------"
+echo -e "${GREEN}---------------------------------------"
 echo -e "Web '$site' byl kompletně odstraněn."
-echo -e "---------------------------------------\e[0m"
+echo -e "---------------------------------------${RESET}"
+echo
