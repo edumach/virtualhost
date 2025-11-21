@@ -22,7 +22,7 @@ chmod 755 "$target"
 
 # Vytvoření jednoduchého index.html
 echo "<h1>$site</h1>" > "$target/index.html"
-echo "<p>Vítejte na webu $site</p>" >> "$target/index.html"
+echo "<p>Vitejte na webu $site</p>" >> "$target/index.html"
 
 # Barevná zelená zpráva
 echo -e "\e[92m---------------------------------------"
