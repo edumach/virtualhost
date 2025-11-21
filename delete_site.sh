@@ -27,7 +27,7 @@ fi
 # Potvrzení
 read -p "${RED}Opravdu chcete smazat $target? (y/n):${RESET} " confirm
 if [ "$confirm" != "y" ]; then
-    echo "Zrušeno."
+    echo -e "${GREEN}Odstranění bylo zrušeno.${RESET}"
     exit 0
 fi
 
