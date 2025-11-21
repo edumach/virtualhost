@@ -1,36 +1,62 @@
-# Správa VirtualHostů pro Apache na Debianu
+# Správa jednoduchých webů ve /var/www/html
 
-Tyto skripty slouží k rychlému vytváření a odstraňování testovacích virtualhostů na Apache serveru. Jsou určeny pro prostředí Debian a využívají barevný výstup pro lepší přehlednost.
+Tato sada skriptů slouží k rychlému vytváření a mazání „webů“ uložených jako podadresáře ve `/var/www/html`. Nepoužívají se žádné VirtualHosty ani aliasy – každý web má vlastní složku, například:
+
+```
+/var/www/html/caje.cz/
+/var/www/html/bylinky.cz/
+```
+
+Weby jsou následně dostupné na:
+
+```
+[http://IP-adresa/caje.cz/](http://IP-adresa/caje.cz/)
+[http://IP-adresa/bylinky.cz/](http://IP-adresa/bylinky.cz/)
+```
+
 
 ## Skripty
 
-### 1. `create_vhost.sh`
+### create_site.sh
+Vytváří nový web:
 
-- Vytváří nový virtualhost s aliasem ve tvaru `http://192.168.21.nnn/<nazev_webu>.cz`
-- Automaticky vytvoří adresář `/var/www/<nazev_webu>` a jednoduchou stránku `index.html`
-- Nastaví správného vlastníka a oprávnění (adresáře 755, soubory 644)
-- Vytvoří konfiguraci v `/etc/apache2/sites-available/` s aliasem a logy
-- Aktivuje web (`a2ensite`) a provede reload Apache
-- Barevný výstup:  
-  - 🟢 zelená = úspěch  
-  - 🟡 žlutá = informace  
-  - 🔴 červená = chyba
+- vytvoří adresář `/var/www/html/<nazev>`
+- nastaví vhodná oprávnění pro uživatele `www-data`
+- vytvoří jednoduchý `index.html`
+- zobrazí barevné potvrzení
 
-### 2. `remove_vhost.sh`
-
-- Komplexně odstraní zvolený virtualhost
-  - deaktivuje web (`a2dissite`)  
-  - smaže konfiguraci `/etc/apache2/sites-available/<nazev_webu>.conf`  
-  - smaže adresář `/var/www/<nazev_webu>`  
-  - smaže logy `/var/log/apache2/<nazev_webu>*.log`  
-  - reload Apache
-- Barevný výstup stejný jako u skriptu pro vytvoření
-
-## Použití
-
-1. Spustit skript s root oprávněním:
+Spuštění:
 
 ```bash
-sudo ./create_vhost.sh
-sudo ./delete_vhost.sh
+sudo ./create_site.sh
 ```
+
+### **delete_site.sh**
+
+Maže existující web:
+
+* ověří existenci složky
+* vyžádá potvrzení před smazáním
+* odstraní celý adresář
+* zobrazí barevné potvrzení
+
+Spuštění:
+
+```bash
+sudo ./delete_site.sh
+```
+
+---
+
+## Požadavky
+
+* Debian / Ubuntu
+* Apache2
+* práva `sudo` pro zápis do `/var/www/html`
+
+---
+
+## Poznámka
+
+Tento způsob je vhodný pro lokální testování a školní projekty, kde není třeba řešit DNS nebo konfiguraci VirtualHostů. Každý web funguje jako samostatný adresář přístupný podle názvu.
+
