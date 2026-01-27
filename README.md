@@ -9,10 +9,9 @@ Tato sada skriptů slouží k rychlému vytváření a mazání „webů“ ulo�
 
 Weby jsou následně dostupné na:
 
-```
 [http://IP-adresa/caje.cz/](http://IP-adresa/caje.cz/)
+
 [http://IP-adresa/bylinky.cz/](http://IP-adresa/bylinky.cz/)
-```
 
 
 ## Skripty
